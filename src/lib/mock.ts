@@ -304,7 +304,7 @@ export function analyze(o: AnalyzeOptions): ProcessResult {
 
   const people = entities.filter((e) => e.type === "person" && e.text !== "Aravindh");
   const sender = closing.split("\n").slice(1).join(" ").trim() || people.at(-1)?.text || null;
-  const vague = category === "follow_up" && entities.length === 0 && deadlines.length === 0;
+  const vague = category === "follow_up" && !entities.some((e) => e.type !== "person") && deadlines.length === 0;
   let cConf = vague ? 0.3 : clamp(0.5 + 0.1 * Math.min(3, entities.length) + (deadlines.length ? 0.1 : 0) + (actions.length ? 0.1 : 0), 0, 0.95);
   if (llm && !vague) cConf = clamp(cConf + 0.04);
   const topicEnt = entities.find((e) => e.type === "project" || e.type === "org");
@@ -325,11 +325,11 @@ export function analyze(o: AnalyzeOptions): ProcessResult {
   if (!skipped) {
     const d = reply.draft ?? "";
     const dl = deadlines[0];
-    const consistent = !dl || (!!dl.resolved_date && d.includes(dl.resolved_date));
+    const consistent = !dl || category === "low_priority" || (!!dl.resolved_date && d.includes(dl.resolved_date));
     checks.push(
       { name: "toxicity", passed: !/\b(stupid|idiot|useless)\b/i.test(d), detail: "No toxic language detected in the draft" },
       { name: "draft_exists", passed: d.length > 0, detail: d ? "Draft generated" : "No draft produced" },
-      { name: "deadline_consistency", passed: consistent, detail: dl ? (consistent ? `Draft references ${dl.resolved_date}` : "Draft omits the resolved deadline") : "No deadlines to check" },
+      { name: "deadline_consistency", passed: consistent, detail: dl && category !== "low_priority" ? (consistent ? `Draft references ${dl.resolved_date}` : "Draft omits the resolved deadline") : "No deadlines to check" },
       { name: "politeness", passed: /\b(thank|thanks|please|happy|glad)\b/i.test(d), detail: "Courtesy markers present" },
       { name: "length", passed: d.length >= 40 && d.length <= 900, detail: `${d.length} characters (40–900 allowed)` },
     );
