@@ -17,10 +17,10 @@ export function buildSpans(r: ProcessResult): Span[] {
   const all: Span[] = [
     ...r.context.deadlines.map((d) => ({ start: d.start, end: d.end, cls: "bg-cat-followup/20 text-foreground ring-1 ring-cat-followup/50", tip: `Deadline → ${d.resolved_date ?? "unresolved"}` })),
     ...r.context.entities.map((e) => ({ start: e.start, end: e.end, cls: "bg-cat-meeting/12 text-cat-meeting", tip: `Entity · ${e.type}` })),
-    ...r.triage.cues.map((c) => ({ start: c.start, end: c.end, cls: CUE_CLS[c.kind], tip: `${c.kind} cue · weight ${c.weight >= 0 ? "+" : ""}${c.weight.toFixed(2)}` })),
+    ...r.triage.cues.map((c) => ({ start: c.start, end: c.end, cls: CUE_CLS[c.kind] ?? "", tip: `${c.kind} cue · weight ${c.weight >= 0 ? "+" : ""}${c.weight.toFixed(2)}` })),
   ].sort((a, b) => a.start - b.start || b.end - a.end);
   const out: Span[] = [];
-  for (const s of all) if (!out.length || s.start >= out[out.length - 1].end) out.push(s);
+  for (const s of all) if (!out.length || s.start >= out[out.length - 1]!.end) out.push(s);
   return out;
 }
 

@@ -13,7 +13,7 @@ import { analyze, draftReply, MOCK_EMAILS, mockBenchmark, mockStream, poolFor } 
 import { parseSSE } from "./sse";
 import { getSettings, setSettings } from "./store";
 
-export const API_URL = (import.meta.env.VITE_API_URL as string | undefined) ?? "http://localhost:8000";
+export const API_URL = (import.meta.env["VITE_API_URL"] as string | undefined) ?? "http://localhost:8000";
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -110,7 +110,7 @@ export const api = {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "text/event-stream" },
         body: JSON.stringify(req),
-        signal,
+        signal: signal ?? null,
       });
       if (!res.ok || !res.body) throw new Error(String(res.status));
       setSettings({ backendOffline: false });

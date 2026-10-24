@@ -225,14 +225,14 @@ export function draftReply(
 }
 
 export interface AnalyzeOptions {
-  subject?: string;
+  subject?: string | undefined;
   body: string;
-  id?: string;
-  useLlm?: boolean;
-  tone?: Tone;
-  threshold?: number;
-  referenceDate?: string;
-  pool?: { id: string; body: string }[];
+  id?: string | undefined;
+  useLlm?: boolean | undefined;
+  tone?: Tone | undefined;
+  threshold?: number | undefined;
+  referenceDate?: string | undefined;
+  pool?: { id: string | undefined; body: string }[];
 }
 
 export function analyze(o: AnalyzeOptions): ProcessResult {

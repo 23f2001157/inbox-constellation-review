@@ -28,14 +28,14 @@ export interface InboxEmail {
   subject: string;
   body: string;
   received_at: string;
-  label?: { category: Category; urgency: "high" | "low" };
+  label?: { category: Category | undefined; urgency: "high" | "low" };
 }
 export interface ProcessRequest {
-  subject?: string;
+  subject?: string | undefined;
   body: string;
-  use_llm?: boolean;
-  tone?: Tone;
-  escalation_threshold?: number;
+  use_llm?: boolean | undefined;
+  tone?: Tone | undefined;
+  escalation_threshold?: number | undefined;
 }
 export interface Cue {
   text: string;
