@@ -14,7 +14,7 @@ export interface AppSettings {
 const KEY = "inboxpilot.settings";
 let state: AppSettings = {
   theme: "light",
-  useMock: (import.meta.env.VITE_USE_MOCK ?? "true") !== "false",
+  useMock: (import.meta.env["VITE_USE_MOCK"] ?? "true") !== "false",
   useLlm: false,
   threshold: 0.5,
   referenceDate: REFERENCE_DATE,

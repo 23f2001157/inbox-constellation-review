@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
 import { scrollToAgent } from "@/lib/scroll";
 
 export const Route = createFileRoute("/")({
-  validateSearch: (s: Record<string, unknown>): { email?: string } => (typeof s.email === "string" ? { email: s.email } : {}),
+  validateSearch: (s: Record<string, unknown>): { email?: string } => (typeof s["email"] === "string" ? { email: s["email"] } : {}),
   head: () => ({
     meta: [
       { title: "Workspace · InboxPilot" },
@@ -111,7 +111,7 @@ function Workspace() {
                   className={cn("w-full rounded-xl border border-transparent p-2.5 text-left transition hover:bg-accent/60", e.id === selectedId && "border-primary/40 bg-accent/50")}
                 >
                   <div className="flex items-center gap-1.5">
-                    <span className="truncate text-xs text-muted-foreground">{e.sender.split("<")[0].trim()}</span>
+                    <span className="truncate text-xs text-muted-foreground">{e.sender.split("<")[0]?.trim()}</span>
                     <span className="ml-auto flex shrink-0 items-center gap-1">
                       {r?.duplicate.is_duplicate && <CopyIcon className="h-3.5 w-3.5 text-cat-info" aria-label="Duplicate" />}
                       {review && <AlertTriangle className="h-3.5 w-3.5 text-cat-urgent" aria-label="Needs review" />}

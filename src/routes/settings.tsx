@@ -57,7 +57,7 @@ function SettingsPage() {
         </Row>
         <Row title="Escalation threshold" desc="Drafts with aggregate confidence below this go to manual review. Applies instantly and on the next run.">
           <div className="flex w-64 items-center gap-3">
-            <Slider min={0.1} max={0.9} step={0.05} value={[s.threshold]} onValueChange={([v]) => setSettings({ threshold: Math.round(v * 100) / 100 })} />
+            <Slider min={0.1} max={0.9} step={0.05} value={[s.threshold]} onValueChange={([v]) => setSettings({ threshold: Math.round((v ?? 0.5) * 100) / 100 })} />
             <span className="w-10 text-right font-mono text-sm">{s.threshold.toFixed(2)}</span>
           </div>
         </Row>

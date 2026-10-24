@@ -344,7 +344,7 @@ export function analyze(o: AnalyzeOptions): ProcessResult {
   let dup = { is_duplicate: false, similarity: 0, matched_id: null as string | null };
   for (const p of o.pool ?? []) {
     const s = r2(jaccard(cleaned, p.body));
-    if (s > dup.similarity) dup = { is_duplicate: s >= 0.8, similarity: s, matched_id: s >= 0.8 ? p.id : null };
+    if (s > dup.similarity) dup = { is_duplicate: s >= 0.8, similarity: s, matched_id: s >= 0.8 ? (p.id ?? null) : null };
   }
   if (!dup.is_duplicate) dup.matched_id = null;
 
@@ -370,7 +370,7 @@ export function analyze(o: AnalyzeOptions): ProcessResult {
     input: { subject: o.subject ?? null, raw },
     valid,
     rejection_reason: valid ? null : "Email body is too short to process",
-    input_agent: { cleaned, salutation, body: bodyText, closing, quoted_ratio: r2(quotedChars / (raw.length || 1)), quoted_stripped: quotedChars > 0, confidence: iConf },
+    input_agent: { cleaned, salutation: salutation ?? "", body: bodyText, closing, quoted_ratio: r2(quotedChars / (raw.length || 1)), quoted_stripped: quotedChars > 0, confidence: iConf },
     triage: { category, urgency_score: urgency, high_urgency: urgency >= 0.6, confidence: r2(tConf), llm_disambiguated: llm && ambiguous, cues },
     context: { deadlines, entities, actions, questions, summary, confidence: r2(cConf) },
     reply,
@@ -383,7 +383,7 @@ export function analyze(o: AnalyzeOptions): ProcessResult {
 
 export function poolFor(id?: string) {
   const idx = MOCK_EMAILS.findIndex((e) => e.id === id);
-  const list = idx >= 0 ? MOCK_EMAILS.slice(0, idx).filter((e) => e.received_at < MOCK_EMAILS[idx].received_at) : MOCK_EMAILS;
+  const list = idx >= 0 ? MOCK_EMAILS.slice(0, idx).filter((e) => e.received_at < MOCK_EMAILS[idx]!.received_at) : MOCK_EMAILS;
   return list.map((e) => ({ id: e.id, body: splitQuoted(e.body).filter((l) => !l.quoted).map((l) => l.line).join("\n").trim() }));
 }
 
@@ -412,8 +412,8 @@ export function mockBenchmark(useLlm: boolean, threshold = 0.5): BenchmarkReport
   const labels = CATEGORIES as string[];
   const matrix = labels.map(() => labels.map(() => 0));
   const per_email = results.map(({ e, r }) => {
-    const exp = e.label!.category, pred = r.triage.category;
-    matrix[labels.indexOf(exp)][labels.indexOf(pred)]++;
+    const exp: string = e.label!.category, pred = r.triage.category;
+    matrix[labels.indexOf(exp)]![labels.indexOf(pred)]!++;
     const eu = e.label!.urgency, pu = r.triage.high_urgency ? "high" : "low";
     return { id: e.id, expected_category: exp, predicted_category: pred, expected_urgency: eu, predicted_urgency: pu, correct: exp === pred && eu === pu };
   });
@@ -442,7 +442,7 @@ export function mockBenchmark(useLlm: boolean, threshold = 0.5): BenchmarkReport
     escalation_rate: r2(results.filter(({ r }) => r.quality.needs_manual_review).length / results.length),
     duplicate_handling_rate: 1,
     explainability_score: 0.94,
-    latency_ms: { mean: Math.round(mean), median: lat[Math.floor(lat.length / 2)], p95: lat[Math.min(lat.length - 1, Math.ceil(lat.length * 0.95) - 1)] },
+    latency_ms: { mean: Math.round(mean), median: lat[Math.floor(lat.length / 2)] ?? 0, p95: lat[Math.min(lat.length - 1, Math.ceil(lat.length * 0.95) - 1)] ?? 0 },
     confusion: { labels, matrix },
     per_email,
   };
