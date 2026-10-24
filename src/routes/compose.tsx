@@ -9,7 +9,7 @@ import { AgentPanel, type PanelTab } from "@/components/ip/AgentPanel";
 import { HighlightedText, Legend } from "@/components/ip/EmailText";
 import { usePipeline } from "@/hooks/use-pipeline";
 import { COMPOSE_PRESETS } from "@/lib/mock";
-import { scrollToAgent } from "./index";
+import { scrollToAgent } from "@/lib/scroll";
 
 export const Route = createFileRoute("/compose")({
   head: () => ({

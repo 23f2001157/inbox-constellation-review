@@ -18,6 +18,7 @@ import { useSettings } from "@/lib/store";
 import { CATEGORIES, type AgentName, type Category, type ProcessResult } from "@/lib/types";
 import { CATEGORY_META } from "@/lib/ui";
 import { cn } from "@/lib/utils";
+import { scrollToAgent } from "@/lib/scroll";
 
 export const Route = createFileRoute("/")({
   validateSearch: (s: Record<string, unknown>): { email?: string } => (typeof s.email === "string" ? { email: s.email } : {}),
@@ -33,14 +34,6 @@ export const Route = createFileRoute("/")({
   }),
   component: Workspace,
 });
-
-export function scrollToAgent(a: AgentName, setTab: (t: PanelTab) => void) {
-  if (a === "input") document.getElementById("email-view")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  else {
-    setTab(a);
-    document.getElementById("agent-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-}
 
 type Filter = { q: string; cat: Category | null; urgent: boolean; review: boolean };
 

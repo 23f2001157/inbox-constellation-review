@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { AlertTriangle, CalendarClock, CheckCircle2, Copy, HelpCircle, Lock, RefreshCw, XCircle } from "lucide-react";
@@ -192,7 +192,6 @@ function QualityTab({ r, threshold, review }: { r: ProcessResult; threshold: num
 export function AgentPanel({ result, loading, tab, onTab }: { result: ProcessResult | null; loading: boolean; tab: PanelTab; onTab: (t: PanelTab) => void }) {
   const { threshold } = useSettings();
   const review = result ? evaluateReview(result, threshold) : null;
-  useEffect(() => {}, [result?.id]);
   return (
     <div id="agent-panel" className="glass rounded-2xl p-4">
       <Tabs value={tab} onValueChange={(v) => onTab(v as PanelTab)}>
@@ -211,7 +210,7 @@ export function AgentPanel({ result, loading, tab, onTab }: { result: ProcessRes
             ) : <Empty>Run the pipeline to see each agent's output.</Empty>
           ) : (
             <motion.div key={result.id + tab} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}>
-              <TabsContent value="triage" forceMount={tab === "triage" ? true : undefined}><TriageTab r={result} /></TabsContent>
+              <TabsContent value="triage"><TriageTab r={result} /></TabsContent>
               <TabsContent value="context"><ContextTab r={result} /></TabsContent>
               <TabsContent value="reply"><ReplyTab key={result.id} r={result} locked={!!review?.needsReview} /></TabsContent>
               <TabsContent value="quality"><QualityTab r={result} threshold={threshold} review={review!} /></TabsContent>
