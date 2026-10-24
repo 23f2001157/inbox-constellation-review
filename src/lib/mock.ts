@@ -305,6 +305,7 @@ export function analyze(o: AnalyzeOptions): ProcessResult {
   const people = entities.filter((e) => e.type === "person" && e.text !== "Aravindh");
   const sender = closing.split("\n").slice(1).join(" ").trim() || people.at(-1)?.text || null;
   const vague = category === "follow_up" && !entities.some((e) => e.type !== "person") && deadlines.length === 0;
+  if (vague) tConf = Math.min(tConf, 0.6);
   let cConf = vague ? 0.3 : clamp(0.5 + 0.1 * Math.min(3, entities.length) + (deadlines.length ? 0.1 : 0) + (actions.length ? 0.1 : 0), 0, 0.95);
   if (llm && !vague) cConf = clamp(cConf + 0.04);
   const topicEnt = entities.find((e) => e.type === "project" || e.type === "org");
