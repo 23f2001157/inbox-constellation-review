@@ -412,7 +412,7 @@ export function mockBenchmark(useLlm: boolean, threshold = 0.5): BenchmarkReport
   const labels = CATEGORIES as string[];
   const matrix = labels.map(() => labels.map(() => 0));
   const per_email = results.map(({ e, r }) => {
-    const exp: string = e.label!.category, pred = r.triage.category;
+    const exp: string = e.label?.category ?? "informational", pred: string = r.triage.category;
     matrix[labels.indexOf(exp)]![labels.indexOf(pred)]!++;
     const eu = e.label!.urgency, pu = r.triage.high_urgency ? "high" : "low";
     return { id: e.id, expected_category: exp, predicted_category: pred, expected_urgency: eu, predicted_urgency: pu, correct: exp === pred && eu === pu };
