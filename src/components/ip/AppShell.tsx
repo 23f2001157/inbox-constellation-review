@@ -41,7 +41,7 @@ export function ThemeToggle() {
 
 function CommandPalette({ open, setOpen }: { open: boolean; setOpen: (o: boolean) => void }) {
   const navigate = useNavigate();
-  const { data: emails } = useQuery({ queryKey: ["emails"], queryFn: api.emails });
+  const { data: emails } = useQuery({ queryKey: ["emails", useSettings().useMock], queryFn: api.emails });
   const go = (fn: () => void) => {
     setOpen(false);
     fn();
